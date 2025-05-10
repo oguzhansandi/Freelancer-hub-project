@@ -8,4 +8,5 @@ public interface IAuthenticationService {
 
     public DtoUser register(AuthRequest input);
 
+    public AuthResponse authenticate(AuthRequest input);
 }

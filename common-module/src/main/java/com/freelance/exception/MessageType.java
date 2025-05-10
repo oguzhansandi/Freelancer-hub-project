@@ -8,6 +8,7 @@ public enum MessageType {
     TOKEN_IS_EXPIRED("1001","token süresi dolmuş"),
     USER_ALREADY_EXISTS("1002", "kullanıcı zaten kayıt olmuş"),
     REGISTER_FAILED("1003", "kayıt sırasında bir hata oluştu"),
+    AUTHETICATION_FAILED("1004", "giriş sırasında bir hata oluştu"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 
     private String code;

@@ -4,6 +4,7 @@ import com.freelance.controller.IRestAuthenticationController;
 import com.freelance.controller.RootEntity;
 import com.freelance.dto.DtoUser;
 import com.freelance.model.AuthRequest;
+import com.freelance.model.AuthResponse;
 import com.freelance.model.BaseEntity;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,11 @@ public class RestAuthenticationController implements IRestAuthenticationControll
     @PostMapping("/register")
     public RootEntity<DtoUser> register(@RequestBody AuthRequest input) {
         return RootEntity.ok(authenticationService.register(input));
+    }
+
+    @Override
+    @PostMapping("/authenticate")
+    public RootEntity<AuthResponse> authenticate(@RequestBody AuthRequest input) {
+        return RootEntity.ok(authenticationService.authenticate(input));
     }
 }
