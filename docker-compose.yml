@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: freelance_postgres
+    environment:
+      POSTGRES_DB: freelancedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+    ports:
+      - "5432:5432"
+    volumes:
+      - freelance_postgres_data:/var/lib/postgresql/data
+    networks:
+      - freelance-network
+
+  freelance-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: freelance_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/freelancedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      - postgres
+    networks:
+      - freelance-network
+
+volumes:
+  freelance_postgres_data:
+
+networks:
+  freelance-network:
