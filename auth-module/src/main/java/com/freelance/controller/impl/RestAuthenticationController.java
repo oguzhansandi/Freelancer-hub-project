@@ -5,12 +5,10 @@ import com.freelance.controller.RootEntity;
 import com.freelance.dto.DtoUser;
 import com.freelance.model.AuthRequest;
 import com.freelance.model.AuthResponse;
-import com.freelance.model.BaseEntity;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,15 +17,23 @@ public class RestAuthenticationController implements IRestAuthenticationControll
     @Autowired
     private IAuthenticationService authenticationService;
 
-    @Override
     @PostMapping("/register")
+    @Override
     public RootEntity<DtoUser> register(@RequestBody AuthRequest input) {
         return RootEntity.ok(authenticationService.register(input));
     }
 
-    @Override
     @PostMapping("/authenticate")
+    @Override
     public RootEntity<AuthResponse> authenticate(@RequestBody AuthRequest input) {
         return RootEntity.ok(authenticationService.authenticate(input));
+    }
+
+    @Override
+    @PostMapping("/logout")
+    public RootEntity<String> logout() {
+        authenticationService.logout();
+        return RootEntity.ok("Çıkış yapıldı");
+
     }
 }

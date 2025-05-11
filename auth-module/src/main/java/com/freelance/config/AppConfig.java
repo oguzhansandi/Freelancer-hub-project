@@ -25,18 +25,19 @@ public class AppConfig {
     private UserRepository userRepository;
 
     @Bean
-    UserDetailsService userDetailsService(){
+    UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 Optional<User> optUser = userRepository.findByUsername(username);
-                if (optUser.isEmpty()){
-                    throw new BaseException(new ErrorMessage(MessageType.USER_NOT_FOUND,"kullanıcı adı : " + username ));
+                if (optUser.isEmpty()) {
+                    throw new BaseException(new ErrorMessage(MessageType.USER_NOT_FOUND, username));
                 }
                 return optUser.get();
             }
         };
     }
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
@@ -45,7 +46,6 @@ public class AppConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -54,6 +54,6 @@ public class AppConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
         return configuration.getAuthenticationManager();
-
     }
+
 }

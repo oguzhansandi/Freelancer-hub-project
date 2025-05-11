@@ -8,7 +8,10 @@ public enum MessageType {
     TOKEN_IS_EXPIRED("1001","token süresi dolmuş"),
     USER_ALREADY_EXISTS("1002", "kullanıcı zaten kayıt olmuş"),
     REGISTER_FAILED("1003", "kayıt sırasında bir hata oluştu"),
-    AUTHETICATION_FAILED("1004", "giriş sırasında bir hata oluştu"),
+    AUTHENTICATION_FAILED("1004", "giriş sırasında bir hata oluştu"),
+    REFRESH_TOKEN_NOT_FOUND("1005", "refresh token bulunamadı"),
+    REFRESHT_TOKEN_EXPIRED("1006", "refresh token süresi dolmuş"),
+    LOGOUT_EXCEPTION("1006","çıkış işleminde hata meydana geldi"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 
     private String code;

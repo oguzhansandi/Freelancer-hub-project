@@ -20,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAuthenticationFilter  extends OncePerRequestFilter {
 
     @Autowired
     private JWTService jwtService;
@@ -30,34 +30,38 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String header = request.getHeader("Authorization");
+
         if (header == null){
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request,response);
             return;
         }
 
-        String token = header.substring(7);
+        String token;
 
-        try {
+        token = header.substring(7);
+        try{
             String username = jwtService.getUsernameByToken(token);
-
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (userDetails != null && jwtService.isTokenValid(token)){
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
-
+                if(userDetails !=null && jwtService.isTokenValid(token)){
+                    UsernamePasswordAuthenticationToken authenticationToken = new
+                            UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    System.out.println("✅ SecurityContext set for: " + username); // BURAYI EKLE
+                }else {
+                    System.out.println("❌ Token geçersiz veya süresi dolmuş.");
                 }
             }
         }catch (ExpiredJwtException ex){
-            throw new BaseException(new ErrorMessage(MessageType.TOKEN_IS_EXPIRED, ex.getMessage()));
-        } catch (Exception e) {
+            throw  new BaseException(new ErrorMessage(MessageType.TOKEN_IS_EXPIRED, ex.getMessage()));
+        }catch (Exception e){
             throw new BaseException(new ErrorMessage(MessageType.GENERAL_EXCEPTION, e.getMessage()));
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
