@@ -7,10 +7,7 @@ import com.freelance.model.AuthRequest;
 import com.freelance.model.AuthResponse;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RestAuthenticationController implements IRestAuthenticationController {
@@ -42,5 +39,12 @@ public class RestAuthenticationController implements IRestAuthenticationControll
     @GetMapping("/me")
     public RootEntity<DtoUser> getProfile() {
         return RootEntity.ok(authenticationService.getProfile());
+    }
+
+    @Override
+    @DeleteMapping("/delete_me")
+    public RootEntity<?> deleteProfile() {
+        authenticationService.deleteProfile();
+        return RootEntity.ok("Kullanıcı başarıyla silindi.");
     }
 }

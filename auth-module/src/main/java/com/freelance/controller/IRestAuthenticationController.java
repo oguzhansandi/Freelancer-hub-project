@@ -13,4 +13,6 @@ public interface IRestAuthenticationController {
     public RootEntity<String> logout();
 
     public RootEntity<DtoUser> getProfile();
+
+    public RootEntity<?> deleteProfile();
 }

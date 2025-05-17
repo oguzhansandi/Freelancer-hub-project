@@ -141,4 +141,18 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
         return dtoUser;
     }
+
+    @Override
+    @Transactional
+    public void deleteProfile() {
+        String username = commonService.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "username : " + username)
+                ));
+
+        refreshTokenRepository.deleteAllByUser(user);
+        userRepository.delete(user);
+    }
 }
