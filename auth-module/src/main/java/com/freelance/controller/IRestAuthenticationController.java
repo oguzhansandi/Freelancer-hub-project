@@ -11,4 +11,6 @@ public interface IRestAuthenticationController {
     public RootEntity<AuthResponse> authenticate(AuthRequest input);
 
     public RootEntity<String> logout();
+
+    public RootEntity<DtoUser> getProfile();
 }

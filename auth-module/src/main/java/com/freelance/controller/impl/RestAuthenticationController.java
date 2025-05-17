@@ -7,6 +7,7 @@ import com.freelance.model.AuthRequest;
 import com.freelance.model.AuthResponse;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,5 +36,11 @@ public class RestAuthenticationController implements IRestAuthenticationControll
         authenticationService.logout();
         return RootEntity.ok("Çıkış yapıldı");
 
+    }
+
+    @Override
+    @GetMapping("/me")
+    public RootEntity<DtoUser> getProfile() {
+        return RootEntity.ok(authenticationService.getProfile());
     }
 }

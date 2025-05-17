@@ -13,4 +13,5 @@ public interface IAuthenticationService {
 
     public void logout();
 
+    public DtoUser getProfile();
 }

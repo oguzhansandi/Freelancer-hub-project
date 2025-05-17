@@ -16,6 +16,7 @@ import com.freelance.services.CommonService;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -123,5 +124,21 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         } catch (Exception e) {
             throw new BaseException(new ErrorMessage(MessageType.LOGOUT_EXCEPTION, e.getMessage()));
         }
+    }
+
+    @Override
+    public DtoUser getProfile() {
+        DtoUser dtoUser = new DtoUser();
+
+        String username = commonService.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "username : " + username)
+                ));
+
+        BeanUtils.copyProperties(user, dtoUser);
+
+        return dtoUser;
     }
 }
