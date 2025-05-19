@@ -12,4 +12,6 @@ public class AuthRequest {
     private String mail;
 
     private String password;
+
+    private Role role;
 }

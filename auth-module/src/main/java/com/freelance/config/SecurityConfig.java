@@ -1,5 +1,6 @@
 package com.freelance.config;
 
+import com.freelance.handler.CustomAccessDeniedHandler;
 import com.freelance.jwt.JWTAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,9 @@ public class SecurityConfig {
     @Autowired
     private JWTAuthenticationFilter authenticationFilter;
 
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     public static final String REGISTER = "/register";
     public static final String AUTHENTICATE = "/authenticate";
     public static final String REFRESH_TOKEN = "/refreshToken";
@@ -38,8 +42,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request->
                         request.requestMatchers(REGISTER, REFRESH_TOKEN,AUTHENTICATE).permitAll()
                                 .requestMatchers(LOGOUT).authenticated()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex ->
+                        ex.accessDeniedHandler(customAccessDeniedHandler))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout.disable());
