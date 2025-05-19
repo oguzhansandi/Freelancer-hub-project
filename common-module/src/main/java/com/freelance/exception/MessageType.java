@@ -9,9 +9,7 @@ public enum MessageType {
     USER_ALREADY_EXISTS("1002", "kullanıcı zaten kayıt olmuş"),
     REGISTER_FAILED("1003", "kayıt sırasında bir hata oluştu"),
     AUTHENTICATION_FAILED("1004", "giriş sırasında bir hata oluştu"),
-    REFRESH_TOKEN_NOT_FOUND("1005", "refresh token bulunamadı"),
-    REFRESH_TOKEN_EXPIRED("1006", "refresh token süresi dolmuş"),
-    REFRESH_TOKEN_FAILED("1007","refresh token oluşturulmadı"),
+    UPDATE_FAILED("1005", "güncelleme işlemi yapılamadı "),
     LOGOUT_EXCEPTION("1008","çıkış işleminde hata meydana geldi"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 

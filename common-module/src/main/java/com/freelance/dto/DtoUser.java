@@ -1,5 +1,6 @@
 package com.freelance.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,12 +9,19 @@ import lombok.Setter;
 @Setter
 public class DtoUser {
 
-    @NotEmpty
     private String username;
 
-    @NotEmpty
+    private String password;
+
+    private String firstName;
+
+    private String lastName;
+
     private String mail;
 
-    @NotEmpty
-    private String password;
+    private String jobTitle;
+
+    private String description;
+
+    private String phoneNumber;
 }

@@ -55,6 +55,8 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         user.setUsername(input.getUsername());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
         user.setMail(input.getMail());
+        user.setFirstName(input.getFirstName());
+        user.setLastName(input.getLastName());
         user.setRole(input.getRole());
         user.setCreateDate(new Date());
         return user;

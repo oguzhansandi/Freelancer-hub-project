@@ -5,17 +5,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthRequest {
+public class UserResponse {
 
     private String username;
-
-    private String mail;
-
-    private String password;
 
     private String firstName;
 
     private String lastName;
 
-    private Role role;
+    private String specializatinCategory;
+
+    private String jobTitle;
+
+    private String userDescription;
+
 }

@@ -11,7 +11,14 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper(){
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
-        return mapper;
+        mapper.getConfiguration()
+                .setSkipNullEnabled(true)
+                .setPropertyCondition(ctx -> {
+                    Object value = ctx.getSource();
+                    if (value instanceof String) {
+                        return !((String) value).isBlank();
+                    }
+                    return value != null;
+                });        return mapper;
     }
 }
