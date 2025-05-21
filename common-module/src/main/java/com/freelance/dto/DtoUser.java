@@ -21,6 +21,8 @@ public class DtoUser {
 
     private String jobTitle;
 
+    private String specializatinCategory;
+
     private String description;
 
     private String phoneNumber;

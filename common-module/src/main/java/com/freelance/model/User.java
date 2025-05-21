@@ -41,6 +41,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(length = 100)
     private String jobTitle;
 
+    private String specializatinCategory;
+
     @Column(length = 500)
     private String description;
 

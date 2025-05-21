@@ -4,9 +4,7 @@ import com.freelance.dto.DtoUser;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
-import com.freelance.model.UpdateUserRequest;
-import com.freelance.model.User;
-import com.freelance.model.UserResponse;
+import com.freelance.model.*;
 import com.freelance.repository.UserRepository;
 import com.freelance.service.IUserService;
 import com.freelance.services.CommonService;
@@ -62,4 +60,16 @@ public class UserServiceImpl implements IUserService {
            throw new BaseException(new ErrorMessage(MessageType.UPDATE_FAILED, e.getMessage()));
        }
    }
+
+    @Override
+    public UserContactResponse updateUserContact(UpdateUserContactRequest request) {
+        String username = commonService.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "username : " + username)
+                ));
+        modelMapper.map(request, user);
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(user, UserContactResponse.class);
+    }
 }
