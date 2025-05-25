@@ -61,4 +61,7 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     private List<UserSkill> skills;
+
+    @OneToOne
+    private Portfolio portfolio;
 }
