@@ -5,6 +5,7 @@ import com.freelance.model.PortfolioResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface IPortfolioService {
 
@@ -12,4 +13,7 @@ public interface IPortfolioService {
 
     public PortfolioResponse createPortfolio(PortfolioRequest request,MultipartFile file);
 
+    public List<PortfolioResponse> getPortfolio(String username);
+
+    public void deletePortfolio(Long id);
 }

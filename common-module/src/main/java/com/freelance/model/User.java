@@ -62,6 +62,6 @@ public class User extends BaseEntity implements UserDetails {
     )
     private List<UserSkill> skills;
 
-    @OneToOne
-    private Portfolio portfolio;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Portfolio> portfolio;
 }

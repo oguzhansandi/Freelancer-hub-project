@@ -14,6 +14,7 @@ import com.freelance.services.CommonService;
 import io.minio.*;
 import io.minio.http.Method;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class PortfolioServiceImpl implements IPortfolioService {
@@ -77,6 +81,7 @@ public class PortfolioServiceImpl implements IPortfolioService {
             throw new IOException("Dosya MinIO'ya yüklenemedi: " + e.getMessage());
         }
     }
+
     @Override
     public PortfolioResponse createPortfolio(PortfolioRequest request, MultipartFile file) {
         String username = commonService.getCurrentUsername();
@@ -101,5 +106,40 @@ public class PortfolioServiceImpl implements IPortfolioService {
 
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
         return  modelMapper.map(savedPortfolio, PortfolioResponse.class);
+    }
+
+    @Override
+    public List<PortfolioResponse> getPortfolio(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "username : " + username)
+                ));
+        List<Portfolio> portfolio = user.getPortfolio();
+
+        return user.getPortfolio().stream()
+                .map(p -> modelMapper.map(p, PortfolioResponse.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deletePortfolio(Long id) {
+        String username = commonService.getCurrentUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "username : " + username)
+                ));
+        Portfolio portfolio = portfolioRepository.findById(id)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.DATA_NOT_FOUND, "Portfolio bulunamadı")
+                ));
+
+        if (!portfolio.getUser().getId().equals(user.getId())){
+            throw new BaseException(
+                    new ErrorMessage(MessageType.ACCESS_DENIED,"portfolio silme yetkiniz yok.")
+            );
+        }
+
+        portfolioRepository.delete(portfolio);
     }
 }

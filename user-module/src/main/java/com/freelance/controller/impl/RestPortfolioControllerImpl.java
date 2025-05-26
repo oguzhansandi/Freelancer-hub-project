@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/rest/api/portfolio")
 public class RestPortfolioControllerImpl extends BaseEntity implements IRestPortfolioController {
@@ -23,5 +25,18 @@ public class RestPortfolioControllerImpl extends BaseEntity implements IRestPort
     public RootEntity<PortfolioResponse> createPortfolio(@ModelAttribute PortfolioRequest request,
                                                          @RequestPart("file") MultipartFile file) {
         return RootEntity.ok(portfolioService.createPortfolio(request, file));
+    }
+
+    @Override
+    @GetMapping("/{username}")
+    public RootEntity<List<PortfolioResponse>> getPortfolio(@PathVariable("username") String username) {
+        return RootEntity.ok(portfolioService.getPortfolio(username));
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public RootEntity<String> deletePortfolio(@PathVariable("id") Long id) {
+        portfolioService.deletePortfolio(id);
+        return RootEntity.ok("Porfolio başarıyla silindi");
     }
 }

@@ -1,9 +1,6 @@
 package com.freelance.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Portfolio extends BaseEntity{
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NotNull
