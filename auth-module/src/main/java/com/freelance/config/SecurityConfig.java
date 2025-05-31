@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request->
                         request.requestMatchers(REGISTER, REFRESH_TOKEN,AUTHENTICATE).permitAll()
                                 .requestMatchers(LOGOUT).authenticated()
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex ->

@@ -13,6 +13,7 @@ public enum MessageType {
     DATA_NOT_FOUND("1006", "veri bulunamadı"),
     ACCESS_DENIED("1007", "yetkisiz erişim"),
     LOGOUT_EXCEPTION("1008","çıkış işleminde hata meydana geldi"),
+    ALREADY_EXISTS("1009", "mevcut kayıt bulundu"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 
     private String code;
