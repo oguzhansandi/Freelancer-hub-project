@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "portfolio")
 @Getter
@@ -37,5 +39,8 @@ public class Portfolio extends BaseEntity{
     @NotNull
     @Column(length = 1000)
     private String mediaURL;
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfolioComment> comments;
 
 }

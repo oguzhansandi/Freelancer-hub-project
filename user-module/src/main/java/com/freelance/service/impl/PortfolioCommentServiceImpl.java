@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class PortfolioCommentServiceImpl implements IPortfolioCommentService {
@@ -59,5 +60,23 @@ public class PortfolioCommentServiceImpl implements IPortfolioCommentService {
         modelMapper.map(comment, commentResponse);
         commentResponse.setUser(user.getUsername());
         return commentResponse;
+    }
+
+    @Override
+    public List<PortfolioCommentResponse> getCommentList(Long portfolioId) {
+
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.DATA_NOT_FOUND, "porfolyo bulunamadı.")
+                ));
+        List<PortfolioComment> comments = portfolio.getComments();
+
+        return comments.stream().map(
+                comment->{
+                    PortfolioCommentResponse response = new PortfolioCommentResponse();
+                    modelMapper.map(comment, response);
+                    response.setUser(comment.getUser().getUsername());
+                    return response;
+                }).toList();
     }
 }
