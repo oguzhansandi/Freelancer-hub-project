@@ -8,8 +8,10 @@ import com.freelance.model.*;
 import com.freelance.repository.*;
 import com.freelance.service.IJobService;
 import com.freelance.services.CommonService;
+import com.freelance.specification.JobContentSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -165,4 +167,34 @@ public class JobServiceImpl implements IJobService {
         return response;
 
     }
+
+    @Override
+    public List<JobListingResponse> getJobs(JobFilterRequest filter) {
+        Specification<JobContent> spec = Specification.where(null);
+
+        if (filter.getCategoryId() != null) {
+            spec = spec.and(JobContentSpecification.hasCategory(filter.getCategoryId()));
+        }
+        if (filter.getSubCategoryId() != null) {
+            spec = spec.and(JobContentSpecification.hasSubCategory(filter.getSubCategoryId()));
+        }
+        if (filter.getServiceTypeId() != null) {
+            spec = spec.and(JobContentSpecification.hasServiceType(filter.getServiceTypeId()));
+        }
+
+        List<JobContent> jobContents = jobContentRepository.findAll(spec);
+
+        return jobContents.stream().map(content -> {
+            JobListingResponse dto = new JobListingResponse();
+            dto.setJobId(content.getJobPosting().getId());
+            dto.setTitle(content.getTitle());
+            dto.setDescription(content.getDescription());
+            dto.setEmployerName(content.getJobPosting().getEmployer().getFirstName() + " " + content.getJobPosting().getEmployer().getLastName());
+            dto.setCategoryName(content.getJobPosting().getCategory().getName());
+            dto.setSubCategoryName(content.getJobPosting().getSubCategory().getName());
+            dto.setServiceTypeName(content.getJobPosting().getServiceType().getName());
+            return dto;
+        }).toList();
+    }
+
 }

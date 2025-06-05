@@ -1,22 +1,23 @@
 package com.freelance.controller.impl;
 
-import com.freelance.controller.IRestJobService;
+import com.freelance.controller.IRestJobController;
 import com.freelance.controller.RootEntity;
-import com.freelance.dto.JobContentRequest;
-import com.freelance.dto.JobContentResponse;
+import com.freelance.dto.JobFilterRequest;
+import com.freelance.dto.JobListingResponse;
 import com.freelance.dto.JobPostingRequest;
 import com.freelance.dto.JobPostingResponse;
 import com.freelance.model.BaseEntity;
+import com.freelance.model.JobContent;
+import com.freelance.model.JobPosting;
 import com.freelance.service.IJobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest/api/jobs")
-public class RestJobService extends BaseEntity implements IRestJobService {
+public class RestJobController extends BaseEntity implements IRestJobController {
 
     @Autowired
     private IJobService jobService;
@@ -25,5 +26,11 @@ public class RestJobService extends BaseEntity implements IRestJobService {
     @PostMapping
     public RootEntity<JobPostingResponse> saveJobPosting(@RequestBody JobPostingRequest request) {
         return RootEntity.ok(jobService.jobPost(request));
+    }
+
+    @Override
+    @GetMapping
+    public RootEntity<List<JobListingResponse>> getJobs(@RequestBody JobFilterRequest filter) {
+        return RootEntity.ok(jobService.getJobs(filter));
     }
 }
