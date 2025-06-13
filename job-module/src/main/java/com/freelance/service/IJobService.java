@@ -14,4 +14,6 @@ public interface IJobService {
     public List<JobListingResponse> getJobs(JobFilterRequest filter);
 
     public JobPostingResponse updateJob(JobPostingRequest request, Long id);
+
+    public String deleteJob(Long id);
 }

@@ -17,5 +17,5 @@ public interface IRestJobController {
 
     public RootEntity<JobPostingResponse> updateJob(JobPostingRequest request, Long id);
 
-
+    public RootEntity<String> deleteJob(Long id);
 }

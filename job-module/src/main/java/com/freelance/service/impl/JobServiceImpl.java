@@ -218,6 +218,25 @@ public class JobServiceImpl implements IJobService {
         return createJobResponse(jobPosting);
     }
 
+    @Override
+    public String deleteJob(Long id) {
+        JobPosting jobPosting = jobPostingRepository.findById(id)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.DATA_NOT_FOUND, "İş bulunamadı")
+                ));
+        String username = commonService.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "Kullanıcı bulunamadı : " + username)
+                ));
+        if (!user.getId().equals(jobPosting.getEmployer().getId())){
+            throw new BaseException(new ErrorMessage(MessageType.ACCESS_DENIED, "Bu iş ilanını silme yetkiniz yok."));
+        }
+
+        jobPostingRepository.delete(jobPosting);
+        return "İş ilanı silindi";
+    }
+
     private void updateBasicJobInfo(JobPostingRequest request, JobPosting jobPosting) {
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() ->
@@ -350,4 +369,6 @@ public class JobServiceImpl implements IJobService {
         response.setPackages(packageResponses);
         return response;
     }
+
+
 }

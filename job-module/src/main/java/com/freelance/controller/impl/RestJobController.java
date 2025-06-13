@@ -41,4 +41,11 @@ public class RestJobController extends BaseEntity implements IRestJobController 
             @PathVariable("id") Long id) {
         return RootEntity.ok(jobService.updateJob(request, id));
     }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public RootEntity<String> deleteJob(@PathVariable("id") Long id) {
+        jobService.deleteJob(id);
+        return RootEntity.ok("iş ilanı silindi");
+    }
 }
