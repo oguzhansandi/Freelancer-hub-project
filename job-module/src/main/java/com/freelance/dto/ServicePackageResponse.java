@@ -12,9 +12,9 @@ import java.util.List;
 public class ServicePackageResponse {
     private String title;
     private String description;
-    private double price;
-    private int deliveryDays;
-    private int revisionCount;
+    private Double price;
+    private Integer deliveryDays;
+    private Integer revisionCount;
     private String type;
 
     private List<ServiceFeatureResponse> features;

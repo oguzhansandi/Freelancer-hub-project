@@ -14,9 +14,9 @@ public class ServicePackageRequest {
 
     private String title;
     private String description;
-    private double price;
-    private int deliveryDays;
-    private int revisionCount;
+    private Double price;
+    private Integer deliveryDays;
+    private Integer revisionCount;
     private ServicePackageType type;
     private List<ServiceFeatureRequest> features;
 }

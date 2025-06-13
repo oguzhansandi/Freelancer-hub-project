@@ -33,4 +33,12 @@ public class RestJobController extends BaseEntity implements IRestJobController 
     public RootEntity<List<JobListingResponse>> getJobs(@RequestBody JobFilterRequest filter) {
         return RootEntity.ok(jobService.getJobs(filter));
     }
+
+    @Override
+    @PutMapping("/{id}")
+    public RootEntity<JobPostingResponse> updateJob(
+            @RequestBody JobPostingRequest request,
+            @PathVariable("id") Long id) {
+        return RootEntity.ok(jobService.updateJob(request, id));
+    }
 }

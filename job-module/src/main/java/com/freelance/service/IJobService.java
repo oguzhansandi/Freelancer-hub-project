@@ -12,4 +12,6 @@ public interface IJobService {
     public JobPostingResponse jobPost(JobPostingRequest request);
 
     public List<JobListingResponse> getJobs(JobFilterRequest filter);
+
+    public JobPostingResponse updateJob(JobPostingRequest request, Long id);
 }

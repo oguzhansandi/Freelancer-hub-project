@@ -1,6 +1,7 @@
 package com.freelance.service.impl;
 
 import com.freelance.dto.*;
+import com.freelance.enums.ServicePackageType;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
@@ -16,9 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -70,7 +70,6 @@ public class JobServiceImpl implements IJobService {
         return jobContentRepository.save(content);
     }
 
-
     private void saveServicePackages(List<ServicePackageRequest> requests, JobPosting jobPosting) {
         for (ServicePackageRequest req : requests) {
             ServicePackage servicePackage = new ServicePackage();
@@ -87,13 +86,6 @@ public class JobServiceImpl implements IJobService {
 
             saveServiceFeatures(req.getFeatures(),savedPackage);
         }
-    }
-
-    private FeatureDefinition findFeatureDefinitionById(Long id) {
-        return featureDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BaseException(
-                        new ErrorMessage(MessageType.DATA_NOT_FOUND, "FeatureDefinition bulunamadı: " + id)
-                ));
     }
 
     private void saveServiceFeatures(List<ServiceFeatureRequest> features, ServicePackage servicePackage){
@@ -197,4 +189,165 @@ public class JobServiceImpl implements IJobService {
         }).toList();
     }
 
+    private FeatureDefinition findFeatureDefinitionById(Long id) {
+        return featureDefinitionRepository.findById(id).orElseThrow(() ->
+                new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND, "FeatureDefinition bulunamadı: " + id)));
+    }
+
+    @Override
+    public JobPostingResponse updateJob(JobPostingRequest request, Long id) {
+        String username = commonService.getCurrentUsername();
+        JobPosting jobPosting = jobPostingRepository.findById(id).orElseThrow(() ->
+                new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND, "İş ilanı bulunamadı.")));
+
+        // Yetki kontrolü
+        if (!username.equals(jobPosting.getEmployer().getUsername())) {
+            throw new BaseException(new ErrorMessage(MessageType.ACCESS_DENIED, "Bu işlemi yapmaya yetkiniz yok."));
+        }
+
+        // 1. Ana bilgileri güncelle (kategori, alt kategori, servis tipi)
+        updateBasicJobInfo(request, jobPosting);
+
+        // 2. İçerik bilgilerini güncelle
+        updateJobContent(request, jobPosting);
+
+        // 3. Paket bilgilerini güncelle (BASIC, STANDARD, PRO)
+        updateServicePackages(request, jobPosting);
+
+        // 4. Response oluştur ve döndür
+        return createJobResponse(jobPosting);
+    }
+
+    private void updateBasicJobInfo(JobPostingRequest request, JobPosting jobPosting) {
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() ->
+                    new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND, "Kategori bulunamadı.")));
+            jobPosting.setCategory(category);
+        }
+
+        if (request.getSubCategoryId() != null) {
+            SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId()).orElseThrow(() ->
+                    new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND, "Alt kategori bulunamadı.")));
+            jobPosting.setSubCategory(subCategory);
+        }
+
+        if (request.getServiceTypeId() != null) {
+            ServiceType serviceType = serviceTypeRepository.findById(request.getServiceTypeId()).orElseThrow(() ->
+                    new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND, "Servis tipi bulunamadı.")));
+            jobPosting.setServiceType(serviceType);
+        }
+
+        jobPostingRepository.save(jobPosting);
+    }
+
+    private void updateJobContent(JobPostingRequest request, JobPosting jobPosting) {
+        JobContent jobContent = jobContentRepository.findByJobPosting(jobPosting).orElseGet(JobContent::new);
+        JobContentRequest contentRequest = request.getContent();
+
+        if (contentRequest != null) {
+            if (contentRequest.getTitle() != null) jobContent.setTitle(contentRequest.getTitle());
+            if (contentRequest.getDescription() != null) jobContent.setDescription(contentRequest.getDescription());
+            if (contentRequest.getRequirements() != null)
+                jobContent.setRequirements(contentRequest.getRequirements());
+
+            jobContent.setJobPosting(jobPosting);
+            jobContentRepository.save(jobContent);
+        }
+    }
+
+    private void updateServicePackages(JobPostingRequest request, JobPosting jobPosting) {
+        if (request.getPackages() == null || request.getPackages().isEmpty()) {
+            return;
+        }
+
+        Map<ServicePackageType, ServicePackage> existingPackages = servicePackageRepository
+                .findByJobPostingId(jobPosting.getId())
+                .stream()
+                .collect(Collectors.toMap(ServicePackage::getType, p -> p));
+
+        for (ServicePackageRequest packageRequest : request.getPackages()) {
+            ServicePackageType type = packageRequest.getType();
+
+            if (existingPackages.containsKey(type)) {
+                updateExistingPackage(packageRequest, existingPackages.get(type));
+            } else {
+                createNewPackage(packageRequest, jobPosting);
+            }
+        }
+    }
+
+    private void updateExistingPackage(ServicePackageRequest request, ServicePackage existingPackage) {
+        if (request.getTitle() != null) existingPackage.setTitle(request.getTitle());
+        if (request.getDescription() != null) existingPackage.setDescription(request.getDescription());
+        if (request.getPrice() != null) existingPackage.setPrice(request.getPrice());
+        if (request.getRevisionCount() != null) existingPackage.setRevisionCount(request.getRevisionCount());
+        if (request.getDeliveryDays() != null) existingPackage.setDeliveryTimeInDays(request.getDeliveryDays());
+
+        servicePackageRepository.save(existingPackage);
+
+        if (request.getFeatures() != null) {
+            updatePackageFeatures(request.getFeatures(), existingPackage);
+        }
+    }
+
+    private void updatePackageFeatures(List<ServiceFeatureRequest> features, ServicePackage servicePackage) {
+        List<ServiceFeature> oldFeatures = serviceFeatureRepository.findByServicePackage(servicePackage);
+        serviceFeatureRepository.deleteAll(oldFeatures);
+
+        saveServiceFeatures(features, servicePackage);
+    }
+
+    private void createNewPackage(ServicePackageRequest request, JobPosting jobPosting) {
+        ServicePackage newPackage = new ServicePackage();
+        newPackage.setTitle(request.getTitle());
+        newPackage.setDescription(request.getDescription());
+        newPackage.setPrice(request.getPrice());
+        newPackage.setJobPosting(jobPosting);
+        newPackage.setType(request.getType());
+        newPackage.setRevisionCount(request.getRevisionCount());
+        newPackage.setDeliveryTimeInDays(request.getDeliveryDays());
+        newPackage.setCreateDate(new Date());
+
+        ServicePackage savedPackage = servicePackageRepository.save(newPackage);
+        saveServiceFeatures(request.getFeatures(), savedPackage);
+    }
+
+    private JobPostingResponse createJobResponse(JobPosting jobPosting) {
+        JobContent jobContent = jobContentRepository.findByJobPosting(jobPosting)
+                .orElseThrow(() -> new BaseException(new ErrorMessage(MessageType.DATA_NOT_FOUND,"iş ilanı bulunamadı")));
+
+        List<ServicePackage> packages = servicePackageRepository.findByJobPostingIdWithFeatures(jobPosting.getId());
+
+        JobPostingResponse response = new JobPostingResponse();
+        response.setId(jobPosting.getId());
+        response.setCategoryName(jobPosting.getCategory().getName());
+        response.setSubCategoryName(jobPosting.getSubCategory().getName());
+        response.setServiceTypeName(jobPosting.getServiceType().getName());
+        response.setCreatedAt(jobPosting.getCreateDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        response.setContent(modelMapper.map(jobContent, JobContentResponse.class));
+        List<ServicePackageResponse> packageResponses = packages.stream()
+                .map(pkg -> {
+                    ServicePackageResponse r = new ServicePackageResponse();
+                    r.setTitle(pkg.getTitle());
+                    r.setDescription(pkg.getDescription());
+                    r.setPrice(pkg.getPrice());
+                    r.setDeliveryDays(pkg.getDeliveryTimeInDays());
+                    r.setRevisionCount(pkg.getRevisionCount());
+                    r.setType(pkg.getType().name());
+
+                    if(pkg.getFeatures() != null) {
+                        r.setFeatures(pkg.getFeatures().stream()
+                                .map(f -> {
+                                    ServiceFeatureResponse fr = new ServiceFeatureResponse();
+                                    fr.setName(f.getFeatureDefinition().getName()); // FeatureDefinition'dan al
+                                    fr.setValue(f.getValue());
+                                    return fr;
+                                }).toList());
+                    }
+                    return r;
+                }).toList();
+
+        response.setPackages(packageResponses);
+        return response;
+    }
 }

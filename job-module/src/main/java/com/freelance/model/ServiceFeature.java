@@ -15,7 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceFeature extends BaseEntity{
-    private String name;
     private String value;
 
     @ManyToOne

@@ -15,4 +15,7 @@ public interface IRestJobController {
 
     public RootEntity<List<JobListingResponse>> getJobs(JobFilterRequest filter);
 
+    public RootEntity<JobPostingResponse> updateJob(JobPostingRequest request, Long id);
+
+
 }
