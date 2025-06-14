@@ -17,6 +17,8 @@ public class ApplicationResponse {
 
     private String freelancer;
 
+    private String employer;
+
     private String coverLetter;
 
     private String status;

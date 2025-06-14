@@ -6,10 +6,9 @@ import com.freelance.dto.ApplicationRequest;
 import com.freelance.dto.ApplicationResponse;
 import com.freelance.service.IApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest/api/applications")
@@ -23,5 +22,17 @@ public class RestApplicationControllerImpl implements IRestApplicationController
     public RootEntity<ApplicationResponse> applyToJob(@RequestBody ApplicationRequest request)
     {
         return RootEntity.ok(applicationService.applyToJob(request));
+    }
+
+    @Override
+    @GetMapping("/my-applications")
+    public RootEntity<List<ApplicationResponse>> getMyApplications() {
+        return RootEntity.ok(applicationService.getMyApplications());
+    }
+
+    @Override
+    @GetMapping("/my-job-applications")
+    public RootEntity<List<ApplicationResponse>> getApplicationsForEmployer() {
+        return RootEntity.ok(applicationService.getApplicationsForEmployer());
     }
 }

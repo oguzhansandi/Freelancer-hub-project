@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ApplicationServiceImpl implements IApplicationService {
@@ -71,7 +72,43 @@ public class ApplicationServiceImpl implements IApplicationService {
         Application savedApplication = applicationRepository.save(application);
         ApplicationResponse mapped = modelMapper.map(savedApplication, ApplicationResponse.class);
         mapped.setFreelancer(username);
+        mapped.setEmployer(jobPosting.getEmployer().getUsername());
         return mapped;
+    }
+
+    @Override
+    public List<ApplicationResponse> getMyApplications() {
+        String username = commonService.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(
+                        () -> new BaseException(new ErrorMessage(MessageType.USER_NOT_FOUND, "kullanıcı bulunamadı : " + username))
+                );
+
+        List<Application> applications = applicationRepository.findByFreelancer(user);
+
+        return applications.stream().map(application -> {
+            ApplicationResponse mapped = modelMapper.map(application, ApplicationResponse.class);
+            mapped.setFreelancer(username);
+            mapped.setEmployer(application.getJobPosting().getEmployer().getUsername());
+            return mapped;
+        }).toList();
+
+    }
+
+    @Override
+    public List<ApplicationResponse> getApplicationsForEmployer() {
+        String username = commonService.getCurrentUsername();
+        User employer = userRepository.findByUsername(username)
+                .orElseThrow(
+                        () -> new BaseException(new ErrorMessage(MessageType.USER_NOT_FOUND, "Kullanıcı bulunamadı : " + username))
+                );
+        List<Application> applications = applicationRepository.findByJobPostingEmployer(employer);
+        return applications.stream().map(application -> {
+            ApplicationResponse mapped = modelMapper.map(application, ApplicationResponse.class);
+            mapped.setFreelancer(application.getFreelancer().getUsername());
+            mapped.setEmployer(employer.getUsername());
+            return mapped;
+        }).toList();
     }
 
 }
