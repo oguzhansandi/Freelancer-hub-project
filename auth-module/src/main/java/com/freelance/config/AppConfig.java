@@ -3,7 +3,7 @@ package com.freelance.config;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
-import com.freelance.model.User;
+import com.freelance.model.user.User;
 import com.freelance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

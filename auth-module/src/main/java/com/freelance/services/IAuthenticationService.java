@@ -1,9 +1,8 @@
 package com.freelance.services;
 
-import com.freelance.dto.DtoUser;
-import com.freelance.jwt.RefreshTokenRequest;
-import com.freelance.model.AuthRequest;
-import com.freelance.model.AuthResponse;
+import com.freelance.dto.user.DtoUser;
+import com.freelance.model.auth.AuthRequest;
+import com.freelance.model.auth.AuthResponse;
 
 public interface IAuthenticationService {
 

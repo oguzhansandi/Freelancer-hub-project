@@ -1,6 +1,7 @@
-package com.freelance.model;
+package com.freelance.model.job;
 
 import com.freelance.enums.ServicePackageType;
+import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServicePackage extends BaseEntity{
+public class ServicePackage extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ServicePackageType type;

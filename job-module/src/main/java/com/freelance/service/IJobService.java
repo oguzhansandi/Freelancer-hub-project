@@ -1,9 +1,7 @@
 package com.freelance.service;
 
 import com.freelance.dto.*;
-import com.freelance.model.JobContent;
-import com.freelance.model.JobPosting;
-import com.freelance.model.ServicePackage;
+import com.freelance.dto.job.JobFilterRequest;
 
 import java.util.List;
 

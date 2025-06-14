@@ -1,7 +1,7 @@
 package com.freelance.controller;
 
 import com.freelance.dto.*;
-import com.freelance.model.FeatureDefinition;
+import com.freelance.model.job.FeatureDefinition;
 
 public interface IRestAdminJobController {
     public RootEntity<CategoryResponse> createCategory(CategoryRequest request);

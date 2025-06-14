@@ -1,4 +1,4 @@
-package com.freelance.model;
+package com.freelance.model.common;
 
 import jakarta.persistence.*;
 import lombok.Getter;

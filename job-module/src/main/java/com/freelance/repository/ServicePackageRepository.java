@@ -1,7 +1,6 @@
 package com.freelance.repository;
 
-import com.freelance.model.JobPosting;
-import com.freelance.model.ServicePackage;
+import com.freelance.model.job.ServicePackage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,5 +1,6 @@
-package com.freelance.model;
+package com.freelance.model.auth;
 
+import com.freelance.model.user.Role;
 import lombok.Getter;
 import lombok.Setter;
 

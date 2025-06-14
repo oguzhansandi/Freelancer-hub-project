@@ -1,7 +1,7 @@
 package com.freelance.repository;
 
-import com.freelance.model.Category;
-import com.freelance.model.SubCategory;
+import com.freelance.model.job.Category;
+import com.freelance.model.job.SubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

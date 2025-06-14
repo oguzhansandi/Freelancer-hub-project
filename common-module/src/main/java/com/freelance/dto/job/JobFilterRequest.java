@@ -1,4 +1,4 @@
-package com.freelance.dto;
+package com.freelance.dto.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

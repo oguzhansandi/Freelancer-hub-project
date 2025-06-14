@@ -1,7 +1,7 @@
 package com.freelance.repository;
 
-import com.freelance.model.ServiceFeature;
-import com.freelance.model.ServicePackage;
+import com.freelance.model.job.ServiceFeature;
+import com.freelance.model.job.ServicePackage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

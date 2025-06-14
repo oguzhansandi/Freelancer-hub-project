@@ -1,27 +1,24 @@
 package com.freelance.services.impl;
 
-import com.freelance.dto.DtoUser;
+import com.freelance.dto.user.DtoUser;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
 import com.freelance.jwt.JWTService;
-import com.freelance.jwt.RefreshTokenRequest;
-import com.freelance.model.AuthRequest;
-import com.freelance.model.AuthResponse;
+import com.freelance.model.auth.AuthRequest;
+import com.freelance.model.auth.AuthResponse;
 import com.freelance.model.RefreshToken;
-import com.freelance.model.User;
+import com.freelance.model.user.User;
 import com.freelance.repository.RefreshTokenRepository;
 import com.freelance.repository.UserRepository;
 import com.freelance.services.CommonService;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

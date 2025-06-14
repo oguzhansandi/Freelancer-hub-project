@@ -1,5 +1,7 @@
-package com.freelance.model;
+package com.freelance.model.porfolio;
 
+import com.freelance.model.common.BaseEntity;
+import com.freelance.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Portfolio extends BaseEntity{
+public class Portfolio extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

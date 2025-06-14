@@ -1,5 +1,7 @@
 package com.freelance.model;
 
+import com.freelance.model.user.User;
+import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,7 +19,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken extends BaseEntity{
+public class RefreshToken extends BaseEntity {
 
     private String refreshToken;
 

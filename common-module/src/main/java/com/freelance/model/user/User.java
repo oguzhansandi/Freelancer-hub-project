@@ -1,5 +1,7 @@
-package com.freelance.model;
+package com.freelance.model.user;
 
+import com.freelance.model.common.BaseEntity;
+import com.freelance.model.porfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,5 +1,6 @@
-package com.freelance.model;
+package com.freelance.model.job;
 
+import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobContent extends BaseEntity{
+public class JobContent extends BaseEntity {
 
     @Column(length = 60)
     @NotNull

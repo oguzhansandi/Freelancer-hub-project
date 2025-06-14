@@ -1,6 +1,6 @@
 package com.freelance.controller;
 
-import com.freelance.dto.DtoUser;
+import com.freelance.dto.user.DtoUser;
 import com.freelance.model.UpdateUserContactRequest;
 import com.freelance.model.UpdateUserRequest;
 import com.freelance.model.UserContactResponse;

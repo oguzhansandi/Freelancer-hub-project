@@ -2,13 +2,11 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestJobController;
 import com.freelance.controller.RootEntity;
-import com.freelance.dto.JobFilterRequest;
+import com.freelance.dto.job.JobFilterRequest;
 import com.freelance.dto.JobListingResponse;
 import com.freelance.dto.JobPostingRequest;
 import com.freelance.dto.JobPostingResponse;
-import com.freelance.model.BaseEntity;
-import com.freelance.model.JobContent;
-import com.freelance.model.JobPosting;
+import com.freelance.model.common.BaseEntity;
 import com.freelance.service.IJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

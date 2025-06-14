@@ -2,7 +2,7 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestPortfolioCommentController;
 import com.freelance.controller.RootEntity;
-import com.freelance.model.BaseEntity;
+import com.freelance.model.common.BaseEntity;
 import com.freelance.model.PortfolioCommentRequest;
 import com.freelance.model.PortfolioCommentResponse;
 import com.freelance.service.IPortfolioCommentService;

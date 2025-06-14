@@ -2,8 +2,9 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestUserController;
 import com.freelance.controller.RootEntity;
-import com.freelance.dto.DtoUser;
+import com.freelance.dto.user.DtoUser;
 import com.freelance.model.*;
+import com.freelance.model.common.BaseEntity;
 import com.freelance.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

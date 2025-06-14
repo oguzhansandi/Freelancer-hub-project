@@ -1,12 +1,13 @@
-package com.freelance.model;
+package com.freelance.model.job;
 
+import com.freelance.model.common.BaseEntity;
+import com.freelance.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobPosting extends BaseEntity{
+public class JobPosting extends BaseEntity {
 
     @ManyToOne
     private User employer;

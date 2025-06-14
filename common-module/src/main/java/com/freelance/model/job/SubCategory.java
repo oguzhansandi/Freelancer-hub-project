@@ -1,5 +1,6 @@
-package com.freelance.model;
+package com.freelance.model.job;
 
+import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -9,17 +10,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "service_feature")
+@Table(name = "sub_categories")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceFeature extends BaseEntity{
-    private String value;
+public class SubCategory extends BaseEntity {
+
+    private String name;
 
     @ManyToOne
-    private ServicePackage servicePackage;
-
-    @ManyToOne(optional = false)
-    private FeatureDefinition featureDefinition;
+    private Category category;
 }

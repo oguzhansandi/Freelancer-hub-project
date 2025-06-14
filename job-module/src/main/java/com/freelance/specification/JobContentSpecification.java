@@ -1,6 +1,6 @@
 package com.freelance.specification;
 
-import com.freelance.model.JobContent;
+import com.freelance.model.job.JobContent;
 import org.springframework.data.jpa.domain.Specification;
 
 public class JobContentSpecification {

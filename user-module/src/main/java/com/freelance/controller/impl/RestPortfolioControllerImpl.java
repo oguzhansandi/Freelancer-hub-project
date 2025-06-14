@@ -2,7 +2,7 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestPortfolioController;
 import com.freelance.controller.RootEntity;
-import com.freelance.model.BaseEntity;
+import com.freelance.model.common.BaseEntity;
 import com.freelance.model.PortfolioRequest;
 import com.freelance.model.PortfolioResponse;
 import com.freelance.service.IPortfolioService;

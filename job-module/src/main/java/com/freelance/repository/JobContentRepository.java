@@ -1,7 +1,7 @@
 package com.freelance.repository;
 
-import com.freelance.model.JobContent;
-import com.freelance.model.JobPosting;
+import com.freelance.model.job.JobContent;
+import com.freelance.model.job.JobPosting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

@@ -2,9 +2,9 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestAuthenticationController;
 import com.freelance.controller.RootEntity;
-import com.freelance.dto.DtoUser;
-import com.freelance.model.AuthRequest;
-import com.freelance.model.AuthResponse;
+import com.freelance.dto.user.DtoUser;
+import com.freelance.model.auth.AuthRequest;
+import com.freelance.model.auth.AuthResponse;
 import com.freelance.services.IAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

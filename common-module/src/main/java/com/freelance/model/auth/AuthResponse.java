@@ -1,4 +1,4 @@
-package com.freelance.model;
+package com.freelance.model.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

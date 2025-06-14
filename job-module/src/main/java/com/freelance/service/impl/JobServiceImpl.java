@@ -1,11 +1,13 @@
 package com.freelance.service.impl;
 
 import com.freelance.dto.*;
+import com.freelance.dto.job.JobFilterRequest;
 import com.freelance.enums.ServicePackageType;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
-import com.freelance.model.*;
+import com.freelance.model.user.User;
+import com.freelance.model.job.*;
 import com.freelance.repository.*;
 import com.freelance.service.IJobService;
 import com.freelance.services.CommonService;

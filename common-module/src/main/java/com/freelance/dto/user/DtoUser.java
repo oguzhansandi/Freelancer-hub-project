@@ -1,7 +1,5 @@
-package com.freelance.dto;
+package com.freelance.dto.user;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 

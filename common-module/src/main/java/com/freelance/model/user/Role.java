@@ -1,4 +1,4 @@
-package com.freelance.model;
+package com.freelance.model.user;
 
 public enum Role {
 

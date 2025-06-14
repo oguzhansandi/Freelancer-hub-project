@@ -1,5 +1,6 @@
-package com.freelance.model;
+package com.freelance.model.job;
 
+import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.freelance.repository;
 
 import com.freelance.model.RefreshToken;
-import com.freelance.model.User;
+import com.freelance.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

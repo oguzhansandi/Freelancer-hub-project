@@ -2,7 +2,7 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestSkillController;
 import com.freelance.controller.RootEntity;
-import com.freelance.model.BaseEntity;
+import com.freelance.model.common.BaseEntity;
 import com.freelance.model.SkillRequest;
 import com.freelance.model.SkillResponse;
 import com.freelance.service.ISkillsService;
