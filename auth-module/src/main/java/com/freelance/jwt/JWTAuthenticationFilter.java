@@ -33,8 +33,8 @@ public class JWTAuthenticationFilter  extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
-        if (header == null){
-            filterChain.doFilter(request,response);
+        if (header == null || !header.startsWith("Bearer ") || header.startsWith("/ws")) {
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -51,9 +51,9 @@ public class JWTAuthenticationFilter  extends OncePerRequestFilter {
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    System.out.println("✅ SecurityContext set for: " + username); // BURAYI EKLE
+                    System.out.println("SecurityContext set for: " + username); 
                 }else {
-                    System.out.println("❌ Token geçersiz veya süresi dolmuş.");
+                    System.out.println("Token geçersiz veya süresi dolmuş.");
                 }
             }
         }catch (ExpiredJwtException ex){

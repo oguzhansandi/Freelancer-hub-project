@@ -14,6 +14,8 @@ public enum MessageType {
     ACCESS_DENIED("1007", "yetkisiz erişim"),
     LOGOUT_EXCEPTION("1008","çıkış işleminde hata meydana geldi"),
     ALREADY_EXISTS("1009", "mevcut kayıt bulundu"),
+    MESSAGE_ERROR("1010", "mesaj kısmında bir hata"),
+    UNAUTHORIZED("1011", "token hatası"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 
     private String code;

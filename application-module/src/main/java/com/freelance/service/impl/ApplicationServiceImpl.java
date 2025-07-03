@@ -1,12 +1,13 @@
 package com.freelance.service.impl;
 
+import com.freelance.dto.ApplicationReplyRequest;
 import com.freelance.dto.ApplicationRequest;
 import com.freelance.dto.ApplicationResponse;
-import com.freelance.enums.ApplicationStatus;
+import com.freelance.enums.applications.ApplicationStatus;
 import com.freelance.exception.BaseException;
 import com.freelance.exception.ErrorMessage;
 import com.freelance.exception.MessageType;
-import com.freelance.model.Application;
+import com.freelance.model.applications.Application;
 import com.freelance.model.job.JobPosting;
 import com.freelance.model.user.User;
 import com.freelance.repository.ApplicationRepository;
@@ -109,6 +110,32 @@ public class ApplicationServiceImpl implements IApplicationService {
             mapped.setEmployer(employer.getUsername());
             return mapped;
         }).toList();
+    }
+
+    @Override
+    public ApplicationResponse applicationReply(Long id, ApplicationReplyRequest request) {
+
+        String username = commonService.getCurrentUsername();
+        User employer = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.USER_NOT_FOUND, "kullanıcı bulunamadı : " + username)
+                ));
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new BaseException(
+                        new ErrorMessage(MessageType.DATA_NOT_FOUND, "başvuru bulunamadı.")
+                ));
+
+        if (!application.getJobPosting().getEmployer().getId().equals(employer.getId())){
+            throw new BaseException(new ErrorMessage(MessageType.ACCESS_DENIED, "Yanıtlama yetkiniz yok"));
+        }
+
+        application.setStatus(request.getStatus());
+        Application updated = applicationRepository.save(application);
+
+        ApplicationResponse mapped = modelMapper.map(updated, ApplicationResponse.class);
+        mapped.setEmployer(employer.getUsername());
+        mapped.setFreelancer(application.getFreelancer().getUsername());
+        return mapped;
     }
 
 }

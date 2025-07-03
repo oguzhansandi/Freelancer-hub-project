@@ -9,6 +9,9 @@ import com.freelance.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.List;
+
 @RestController
 @RequestMapping("/rest/api/user")
 public class RestUserControllerImpl extends BaseEntity implements IRestUserController {
@@ -32,5 +35,11 @@ public class RestUserControllerImpl extends BaseEntity implements IRestUserContr
     @PutMapping("/contact")
     public RootEntity<UserContactResponse> updateUserContact(@RequestBody UpdateUserContactRequest request) {
         return RootEntity.ok(userService.updateUserContact(request));
+    }
+
+    @Override
+    @GetMapping("/list")
+    public RootEntity<List<String>> getAllUsers(Principal principal) {
+        return RootEntity.ok(userService.getAllUsers(principal));
     }
 }

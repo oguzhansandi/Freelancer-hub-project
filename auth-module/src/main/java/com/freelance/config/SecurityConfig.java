@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,23 +35,49 @@ public class SecurityConfig {
     public static final String REGISTER = "/register";
     public static final String AUTHENTICATE = "/authenticate";
     public static final String REFRESH_TOKEN = "/refreshToken";
+    public static final String VALIDATE_TOKEN = "/api/token/validate" ;
     public static final String LOGOUT = "/logout";
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(request->
-                        request.requestMatchers(REGISTER, REFRESH_TOKEN,AUTHENTICATE).permitAll()
-                                .requestMatchers(LOGOUT).authenticated()
-                                .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().authenticated())
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.ico",
+                                "/static/**", "/js/**", "/css/**",
+                                "/images/**", "/webjars/**",
+                                "/ws/**", "/ws-chat/**", "/error",
+                                "/js/auth-check.js",
+                                REGISTER, REFRESH_TOKEN, AUTHENTICATE, VALIDATE_TOKEN
+                        ).permitAll()
+                        .requestMatchers(LOGOUT).authenticated()
+                        .requestMatchers(new RegexRequestMatcher(".*\\.html$", null)).permitAll()
+                        .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex ->
-                        ex.accessDeniedHandler(customAccessDeniedHandler))
+                .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout.disable());
+
         return http.build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
 }

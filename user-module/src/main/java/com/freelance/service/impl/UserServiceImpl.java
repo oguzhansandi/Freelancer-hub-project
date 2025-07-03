@@ -14,6 +14,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements IUserService {
 
@@ -70,5 +74,13 @@ public class UserServiceImpl implements IUserService {
         modelMapper.map(request, user);
         User savedUser = userRepository.save(user);
         return modelMapper.map(user, UserContactResponse.class);
+    }
+
+    @Override
+    public List<String> getAllUsers(Principal principal) {
+        return userRepository.findAll().stream()
+                .map(User::getUsername)
+                .filter(username -> !username.equals(principal.getName()))
+                .collect(Collectors.toList());
     }
 }

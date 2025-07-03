@@ -1,4 +1,4 @@
-package com.freelance.enums;
+package com.freelance.enums.applications;
 
 public enum ApplicationStatus {
 

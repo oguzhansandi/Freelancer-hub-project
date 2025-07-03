@@ -2,6 +2,7 @@ package com.freelance.controller.impl;
 
 import com.freelance.controller.IRestApplicationController;
 import com.freelance.controller.RootEntity;
+import com.freelance.dto.ApplicationReplyRequest;
 import com.freelance.dto.ApplicationRequest;
 import com.freelance.dto.ApplicationResponse;
 import com.freelance.service.IApplicationService;
@@ -34,5 +35,14 @@ public class RestApplicationControllerImpl implements IRestApplicationController
     @GetMapping("/my-job-applications")
     public RootEntity<List<ApplicationResponse>> getApplicationsForEmployer() {
         return RootEntity.ok(applicationService.getApplicationsForEmployer());
+    }
+
+    @Override
+    @PutMapping("/{id}/reply")
+    public RootEntity<ApplicationResponse> applicationReply(
+            @PathVariable("id") Long id,
+            @RequestBody ApplicationReplyRequest request
+    ) {
+        return RootEntity.ok(applicationService.applicationReply(id, request));
     }
 }

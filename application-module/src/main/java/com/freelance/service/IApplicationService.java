@@ -1,6 +1,6 @@
 package com.freelance.service;
 
-import com.freelance.controller.RootEntity;
+import com.freelance.dto.ApplicationReplyRequest;
 import com.freelance.dto.ApplicationRequest;
 import com.freelance.dto.ApplicationResponse;
 
@@ -13,6 +13,8 @@ public interface IApplicationService {
     public List<ApplicationResponse> getMyApplications();
 
     public List<ApplicationResponse> getApplicationsForEmployer();
+
+    public ApplicationResponse applicationReply(Long id, ApplicationReplyRequest request);
 
 
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose User to Chat</title>
+    <link rel="stylesheet" href="/css/main.css">
+
+    <script src="js/auth-check.js"></script>
+</head>
+<body>
+
+<div id="user-select-page">
+    <div class="user-list-container">
+        <h2>Select a User to Chat</h2>
+        <ul id="userList"></ul>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("jwtToken");
+    const currentUser = localStorage.getItem("username");
+
+    async function initPage() {
+        try {
+            const userResponse = await fetch("/rest/api/user/list", {
+                method: "GET",
+                headers: {
+                   "Authorization": token
+                }
+            });
+
+            if (!userResponse.ok) {
+                throw new Error("Kullanıcılar alınamadı.");
+            }
+
+            const result = await userResponse.json();
+            const users = result.payload;
+
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+
+            users.forEach(user => {
+                if (user !== currentUser) {
+                    const li = document.createElement('li');
+                    li.textContent = user;
+                    li.classList.add('user-item');
+                    li.onclick = () => {
+                        localStorage.setItem('receiver', user);
+                        window.location.href = "/chat.html";
+                    };
+                    userList.appendChild(li);
+                }
+            });
+
+        } catch (err) {
+            alert("Kullanıcı listesi alınamadı.");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initPage();
+    });
+</script>
+
+<style>
+    .user-list-container {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    }
+
+    ul#userList {
+        list-style: none;
+        padding: 0;
+    }
+
+    .user-item {
+        padding: 10px;
+        margin: 5px 0;
+        background: #f0f0f0;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .user-item:hover {
+        background: #d0f0d0;
+    }
+</style>
+
+</body>
+</html>

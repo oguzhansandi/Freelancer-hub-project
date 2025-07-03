@@ -1,6 +1,6 @@
 package com.freelance.model.job;
 
-import com.freelance.enums.ServicePackageType;
+import com.freelance.enums.job.ServicePackageType;
 import com.freelance.model.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

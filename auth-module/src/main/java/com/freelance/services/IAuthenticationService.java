@@ -15,4 +15,6 @@ public interface IAuthenticationService {
     public DtoUser getProfile();
 
     public void deleteProfile();
+
+    public boolean validateToken(String token);
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<div class="username-page-container">
+    <h2>Login to Chat</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Username" class="form-control" required>
+            <input type="password" id="password" placeholder="Password" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="accent">Login</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        try {
+            const response = await fetch("/authenticate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                throw new Error("Login failed");
+            }
+
+            const data = await response.json();
+            localStorage.setItem("jwtToken", "Bearer " + data.payload.accessToken);
+            localStorage.setItem("username", username);
+
+            window.location.href = "/user-list.html";
+        } catch (err) {
+            alert("Login error: " + err.message);
+        }
+    });
+</script>
+
+</body>
+</html>

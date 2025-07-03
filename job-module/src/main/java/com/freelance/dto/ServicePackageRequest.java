@@ -1,6 +1,6 @@
 package com.freelance.dto;
 
-import com.freelance.enums.ServicePackageType;
+import com.freelance.enums.job.ServicePackageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

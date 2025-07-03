@@ -155,4 +155,13 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         refreshTokenRepository.deleteAllByUser(user);
         userRepository.delete(user);
     }
+
+    @Override
+    public boolean validateToken(String token) {
+        try {
+            return jwtService.isTokenValid(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

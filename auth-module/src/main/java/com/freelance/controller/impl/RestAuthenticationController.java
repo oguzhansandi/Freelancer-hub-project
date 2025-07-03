@@ -6,7 +6,10 @@ import com.freelance.dto.user.DtoUser;
 import com.freelance.model.auth.AuthRequest;
 import com.freelance.model.auth.AuthResponse;
 import com.freelance.services.IAuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,4 +50,23 @@ public class RestAuthenticationController implements IRestAuthenticationControll
         authenticationService.deleteProfile();
         return RootEntity.ok("Kullanıcı başarıyla silindi.");
     }
+
+    @GetMapping("/api/token/validate")
+    public RootEntity<?> validateToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+
+        if (header == null || !header.startsWith("Bearer ")) {
+            return RootEntity.error("Authorization header eksik veya hatalı");
+        }
+
+        String token = header.substring(7);
+        boolean valid = authenticationService.validateToken(token);
+
+        if (valid) {
+            return RootEntity.ok("Token geçerli");
+        } else {
+            return RootEntity.error("Token geçersiz");
+        }
+    }
+
 }

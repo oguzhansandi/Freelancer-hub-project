@@ -30,6 +30,9 @@ public class JobPosting extends BaseEntity {
     @ManyToOne
     private ServiceType serviceType;
 
+    @Column(name = "application_counts")
+    private Integer applicationCounts;
+
     @OneToOne(mappedBy = "jobPosting", cascade = CascadeType.ALL)
     private JobContent jobContent;
 

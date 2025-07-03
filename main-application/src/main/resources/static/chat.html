@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <script src="js/auth-check.js"></script>
+
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<div id="chat-page">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Chat with <span id="chatWith"></span></h2>
+        </div>
+        <div class="connecting">Connecting...</div>
+        <ul id="messageArea"></ul>
+        <form id="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+                    <button type="submit" class="primary">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    const token = localStorage.getItem("jwtToken");
+    const username = localStorage.getItem("username");
+    const receiver = localStorage.getItem("receiver");
+    const rawToken = localStorage.getItem("jwtToken").replace("Bearer ", "");
+
+    document.getElementById("chatWith").textContent = receiver;
+
+    let stompClient = null;
+    let chatId = null;
+
+    async function fetchChatId() {
+        try {
+            const response = await fetch(`/api/chats/id?user1=${username}&user2=${receiver}`, {
+                headers: {
+                    'Authorization':token
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Chat ID alınamadı");
+            }
+
+            const id = await response.json();
+            chatId = id;
+            localStorage.setItem("chatId", id);
+            connect();
+        } catch (err) {
+            alert("Chat ID alınırken hata:", err);
+        }
+    }
+
+    function connect() {
+        if (!chatId) {
+            alert("Chat ID tanımsız, bağlantı kurulmadı.");
+            return;
+        }
+
+        const socket = new SockJS('/ws?token=' + rawToken);
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onError);
+    }
+
+    function onConnected() {
+        stompClient.subscribe("/topic/chat." + chatId, onMessageReceived);
+        document.querySelector('.connecting').classList.add('hidden');
+    }
+
+    function onError(error) {
+        alert("STOMP baglantisi basirisiz:", error);
+        document.querySelector('.connecting').textContent = "Connection failed.";
+    }
+
+    function sendMessage(event) {
+        const messageContent = document.getElementById("message").value.trim();
+        if (messageContent && stompClient) {
+            const message = {
+                sender: username,
+                receiver: receiver,
+                content: messageContent,
+                chatId: chatId
+            };
+            stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+            renderMessage(message, true);
+            document.getElementById("message").value = '';
+        }
+        event.preventDefault();
+    }
+
+    function onMessageReceived(payload) {
+        const message = JSON.parse(payload.body);
+        if (message.sender === username) {
+            return;
+        }
+        renderMessage(message, false);
+    }
+
+    function renderMessage(message, isOwn) {
+        const li = document.createElement("li");
+        li.classList.add("chat-message");
+        if (isOwn) li.classList.add("own-message");
+
+        const sender = document.createElement("span");
+        sender.textContent = message.sender;
+
+        const content = document.createElement("p");
+        content.textContent = message.content;
+
+        li.appendChild(sender);
+        li.appendChild(content);
+
+        const messageArea = document.getElementById("messageArea");
+        messageArea.appendChild(li);
+        messageArea.scrollTop = messageArea.scrollHeight;
+    }
+
+    document.getElementById("messageForm").addEventListener("submit", sendMessage);
+
+    fetchChatId();
+</script>
+
+
+</body>
+</html>

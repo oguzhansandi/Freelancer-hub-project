@@ -1,6 +1,6 @@
-package com.freelance.model;
+package com.freelance.model.applications;
 
-import com.freelance.enums.ApplicationStatus;
+import com.freelance.enums.applications.ApplicationStatus;
 import com.freelance.model.user.User;
 import com.freelance.model.common.BaseEntity;
 import com.freelance.model.job.JobPosting;

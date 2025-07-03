@@ -1,6 +1,6 @@
 package com.freelance.repository;
 
-import com.freelance.model.Application;
+import com.freelance.model.applications.Application;
 import com.freelance.model.job.JobPosting;
 import com.freelance.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
