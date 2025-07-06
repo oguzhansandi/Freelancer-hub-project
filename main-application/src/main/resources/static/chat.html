@@ -3,7 +3,7 @@
 <head>
     <title>Chat</title>
     <script src="js/auth-check.js"></script>
-
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
@@ -18,6 +18,7 @@
         <form id="messageForm">
             <div class="form-group">
                 <div class="input-group clearfix">
+                    <input type="file" id="fileInput" class="form-control" />
                     <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
                     <button type="submit" class="primary">Send</button>
                 </div>
@@ -81,21 +82,55 @@
         document.querySelector('.connecting').textContent = "Connection failed.";
     }
 
-    function sendMessage(event) {
-        const messageContent = document.getElementById("message").value.trim();
-        if (messageContent && stompClient) {
-            const message = {
-                sender: username,
-                receiver: receiver,
-                content: messageContent,
-                chatId: chatId
-            };
-            stompClient.send("/app/chat.send", {}, JSON.stringify(message));
-            renderMessage(message, true);
-            document.getElementById("message").value = '';
+async function sendMessage(event) {
+    event.preventDefault();
+
+    const messageContent = document.getElementById("message").value.trim();
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    let attachmentUrl = null;
+    let attachmentType = null;
+
+    if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const uploadRes = await fetch("/api/files/upload", {
+            method: "POST",
+            headers: {
+                'Authorization': token
+            },
+            body: formData
+        });
+
+        if (uploadRes.ok) {
+            attachmentUrl = await uploadRes.text();
+            alert("attachment URL : " + attachmentUrl);
+            attachmentType = file.type;
+        } else {
+            alert("Dosya yüklenemedi.");
+            return;
         }
-        event.preventDefault();
     }
+
+    if ((messageContent || attachmentUrl) && stompClient) {
+        const message = {
+            sender: username,
+            receiver: receiver,
+            content: messageContent,
+            chatId: chatId,
+            attachmentUrl: attachmentUrl,
+            attachmentType: attachmentType
+        };
+
+        stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+        renderMessage(message, true);
+        document.getElementById("message").value = '';
+        fileInput.value = '';
+    }
+}
+
 
     function onMessageReceived(payload) {
         const message = JSON.parse(payload.body);
@@ -105,24 +140,78 @@
         renderMessage(message, false);
     }
 
-    function renderMessage(message, isOwn) {
-        const li = document.createElement("li");
-        li.classList.add("chat-message");
-        if (isOwn) li.classList.add("own-message");
+function renderMessage(message, isOwn) {
+    const li = document.createElement("li");
+    li.classList.add("chat-message");
+    if (isOwn) li.classList.add("own-message");
 
-        const sender = document.createElement("span");
-        sender.textContent = message.sender;
+    const sender = document.createElement("span");
+    sender.textContent = message.sender;
 
-        const content = document.createElement("p");
-        content.textContent = message.content;
+    const content = document.createElement("p");
+    content.textContent = message.content;
 
-        li.appendChild(sender);
+    li.appendChild(sender);
+    if (message.content) {
         li.appendChild(content);
-
-        const messageArea = document.getElementById("messageArea");
-        messageArea.appendChild(li);
-        messageArea.scrollTop = messageArea.scrollHeight;
     }
+
+    if (message.attachmentUrl) {
+        const fileName = message.attachmentUrl.split('/').pop();
+        const fileUrl = "/api/files/download/" + encodeURIComponent(fileName);
+
+        if (message.attachmentType && message.attachmentType.startsWith("image/")) {
+            fetch(fileUrl, {
+                method: "GET",
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const img = document.createElement("img");
+                img.style.maxWidth = "200px";
+                img.src = URL.createObjectURL(blob);
+                li.appendChild(img);
+            })
+            .catch(err => {
+                console.error("Resim yüklenemedi:", err);
+            });
+        } else {
+            const link = document.createElement("a");
+            const fileOriginalName = message.attachmentOriginalName || message.attachmentUrl.split('_').slice(1).join('_');
+            link.href = fileUrl;
+            link.innerText = "📎 " + fileOriginalName;
+            link.download = "";
+            link.target = "_blank";
+            link.onclick = function (e) {
+                e.preventDefault();
+                fetch(link.href, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = message.attachmentUrl.split('/').pop();
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                });
+            };
+            li.appendChild(link);
+        }
+    }
+
+    const messageArea = document.getElementById("messageArea");
+    messageArea.appendChild(li);
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+
 
     document.getElementById("messageForm").addEventListener("submit", sendMessage);
 

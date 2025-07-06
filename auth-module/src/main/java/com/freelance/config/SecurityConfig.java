@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,6 +54,7 @@ public class SecurityConfig {
                                 REGISTER, REFRESH_TOKEN, AUTHENTICATE, VALIDATE_TOKEN
                         ).permitAll()
                         .requestMatchers(LOGOUT).authenticated()
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").authenticated()
                         .requestMatchers(new RegexRequestMatcher(".*\\.html$", null)).permitAll()
                         .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

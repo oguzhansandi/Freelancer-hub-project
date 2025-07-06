@@ -14,8 +14,15 @@ import com.freelance.repository.UserRepository;
 import com.freelance.service.IMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class MessageServiceImpl implements IMessageService {
@@ -28,6 +35,7 @@ public class MessageServiceImpl implements IMessageService {
 
     @Autowired
     private MessageRepository messageRepository;
+
 
     public Chat getOrCreateChat(User user1, User user2){
 
@@ -66,6 +74,12 @@ public class MessageServiceImpl implements IMessageService {
         message.setCreateDate(new Date());
         message.setRead(false);
 
+        if (request.getAttachmentUrl() != null && !request.getAttachmentUrl().isBlank()) {
+            message.setAttachmentUrl(request.getAttachmentUrl());
+            message.setAttachmentOriginalName(request.getAttachmentOriginalName());
+            message.setAttachmentType(request.getAttachmentType());
+        }
+
         Message saved = messageRepository.save(message);
 
         return new MessageResponse(
@@ -74,8 +88,10 @@ public class MessageServiceImpl implements IMessageService {
                 sender.getId(),
                 sender.getUsername(),
                 saved.getContent(),
+                saved.getAttachmentOriginalName(),
+                saved.getAttachmentType(),
+                saved.getAttachmentUrl(),
                 saved.getCreateDate()
         );
     }
-
 }

@@ -1,6 +1,7 @@
 package com.freelance.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -15,4 +16,7 @@ public class MessageRequest {
     private Long senderId;
     private String content;
     private Date createdDate;
+    private String attachmentOriginalName;
+    private String attachmentUrl;
+    private String attachmentType;
 }

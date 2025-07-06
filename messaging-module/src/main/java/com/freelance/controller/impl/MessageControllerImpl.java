@@ -1,5 +1,6 @@
 package com.freelance.controller.impl;
 
+import com.freelance.controller.IMessageController;
 import com.freelance.dto.ChatMessage;
 import com.freelance.dto.MessageRequest;
 import com.freelance.dto.MessageResponse;
@@ -13,17 +14,21 @@ import com.freelance.service.IChatService;
 import com.freelance.service.IMessageService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequiredArgsConstructor
-public class MessageControllerImpl {
+public class MessageControllerImpl implements IMessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final IMessageService messageService;
@@ -44,11 +49,13 @@ public class MessageControllerImpl {
                 .chatId(chat.getId())
                 .senderId(sender.getId())
                 .content(chatMessage.getContent())
+                .attachmentType(chatMessage.getAttachmentType())
+                .attachmentUrl(chatMessage.getAttachmentUrl())
                 .build();
 
         messageService.sendMessage(request);
 
-        chatMessage.setChatId(chat.getId()); // frontend’e chatId dönecek
+        chatMessage.setChatId(chat.getId());
         messagingTemplate.convertAndSend("/topic/chat." + chat.getId(), chatMessage);
     }
 

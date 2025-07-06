@@ -29,8 +29,12 @@ public class Message extends BaseEntity {
 
     private boolean isRead = false;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content;
+
+    private String attachmentOriginalName;
+
+    private String attachmentType;
 
     private String attachmentUrl;
 

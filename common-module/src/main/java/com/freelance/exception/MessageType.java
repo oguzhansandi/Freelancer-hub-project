@@ -16,6 +16,7 @@ public enum MessageType {
     ALREADY_EXISTS("1009", "mevcut kayıt bulundu"),
     MESSAGE_ERROR("1010", "mesaj kısmında bir hata"),
     UNAUTHORIZED("1011", "token hatası"),
+    FILE_NOT_SAVED("1012", "Dosya kaydedilemedi"),
     GENERAL_EXCEPTION("9999", "genel bir hata oluştu");
 
     private String code;

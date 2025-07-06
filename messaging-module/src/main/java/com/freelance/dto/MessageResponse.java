@@ -19,6 +19,8 @@ public class MessageResponse {
     private Long senderId;
     private String senderName;
     private String content;
+    private String attachmentOriginalName;
+    private String attachmentType;
+    private String attachmentUrl;
     private Date createDate;
-//    private MessageType type;
 }

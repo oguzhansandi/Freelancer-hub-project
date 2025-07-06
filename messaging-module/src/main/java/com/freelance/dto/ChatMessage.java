@@ -17,5 +17,7 @@ public class ChatMessage {
     private String content;
     private String sender;
     private String receiver;
+    private String attachmentUrl;
+    private String attachmentType;
 
 }
